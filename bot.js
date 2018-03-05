@@ -1,5 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api')
-const { generate, generatePhrase, translatePhrase } = require('./generator')
+const { generate, generateCats, generatePhrase, translatePhrase } = require('./generator')
 
 const token = process.env.BIZON_TOKEN
 let LANG = process.env.BIZON_LANG || 'ru'
@@ -11,13 +11,18 @@ if ( !token ) {
 
 const bot = new TelegramBot(token, {polling: true})
 
-bot.onText(/\/say (.+)/, (msg, match) => {
+bot.onText(/\/say( (.+))?/, (msg, match) => {
   const chatId = msg.chat.id
   const resp = match[1]
   if ( resp == 'ru' || resp == 'en' ) LANG = resp
 
   translatePhrase(generatePhrase(15), LANG)
     .then( trans => bot.sendMessage(chatId, trans.text) )
+})
+
+bot.onText(/\/cat( (.+))?/, (msg, match) => {
+  const chatId = msg.chat.id;
+  generateCats('en').then ( trans => trans.length ? bot.sendMessage(chatId, trans[0]) : null )
 })
 
 bot.on('message', (msg) => {
