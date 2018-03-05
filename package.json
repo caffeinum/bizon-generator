@@ -1,0 +1,15 @@
+{
+  "name": "generate-phrase",
+  "version": "1.0.0",
+  "description": "Generate random russian phrase using Google Translate API",
+  "main": "index.js",
+  "dependencies": {
+    "google-translate-api": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
