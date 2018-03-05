@@ -1,0 +1,17 @@
+{
+  apps: [
+      {
+        name: "bizon bot",
+        script: "./bot.js",
+        watch: true,
+        env: {
+            "BIZON_TOKEN": process.env.BIZON_TOKEN,
+            "NODE_ENV": "development"
+        },
+        env_production: {
+            "BIZON_TOKEN": process.env.BIZON_TOKEN,
+            "NODE_ENV": "production"
+        }
+      }
+  ]
+}
