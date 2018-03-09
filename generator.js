@@ -56,12 +56,14 @@ const generate = (lang) => {
   let phrases = Array(10).fill(null).map( () => generatePhrase(20) )
   return generatePromise(phrases, lang)
     .then(trans => trans.filter( t => LANGS[lang].caps.includes(t[0]) ) )
+    .then(trans => trans.filter( t => t[ t.length - 1 ] == '.' ) )
 }
 
 const generateCats = (lang) => {
-  let phrases = Array(10).fill(null).map( () => generatePhraseAndInject('кошка мяу')(20, lang) )
+  let phrases = Array(20).fill(null).map( () => generatePhraseAndInject('кошка мяу')(20, lang) )
   return generatePromise(phrases, lang)
     .then(trans => trans.filter( t => t.includes( LANGS[lang].cat ) ))
+    .then(trans => trans.filter( t => t[ t.length - 1 ] == '.' ) )
 }
 
 module.exports = { generate, generateCats, generatePhrase, translatePhrase }
