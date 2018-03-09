@@ -18,6 +18,7 @@ bot.onText(/\/say( (.+))?/, (msg, match) => {
 
   translatePhrase(generatePhrase(15), LANG)
     .then( trans => bot.sendMessage(chatId, trans.text) )
+    .catch( err => bot.sendMessage(chatId, err) )
 })
 
 bot.onText(/\/cat( (.+))?/, (msg, match) => {
@@ -29,5 +30,11 @@ bot.on('message', (msg) => {
   const chatId = msg.chat.id;
 
   console.log('message', msg.chat, msg.text)
-  generate().then ( trans => bot.sendMessage(chatId, trans[0]) )
+  generate()
+    .then ( trans => {
+      if (!trans.length) throw new Error("Empty google translate result")
+      return trans
+    })
+    .then ( trans => bot.sendMessage(chatId, trans[0]) )
+    .catch( err => console.error(err) )
 })
