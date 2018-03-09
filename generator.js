@@ -46,22 +46,32 @@ const generatePhraseAndInject = (str) => (n, lang) => {
   return arr.join(" ")
 }
 
+const debug = t => { console.log('debug', t); return t }
+
 const translatePhrase = (phrase, lang) => translate(phrase, {from: 'lb', to: lang || 'ru'})
+
+const translatePhrases = (phrases, lang) =>
+  translate(phrases.join("\n"), {from: 'lb', to: lang || 'ru'})
+
+const generatePromiseOneBatch = (phrases, lang) =>
+  translatePhrases(phrases, lang).then( t => t.text.split("\n") )
 
 const generatePromise = (phrases, lang) => Promise.all(phrases.map((phrase) => translatePhrase(phrase, lang)))
   .then(trans => trans.map( t => t.text ) )
 
-const generate = (lang) => {
-  lang = 'ru' || lang
-  let phrases = Array(10).fill(null).map( () => generatePhrase(20) )
+const generate = (lang, number) => {
+  lang = lang || 'ru'
+  number = parseInt(number) || 20
+  let phrases = Array(number).fill(null).map( () => generatePhrase(20) )
   return generatePromise(phrases, lang)
     .then(trans => trans.filter( t => LANGS[lang].caps.includes(t[0]) ) )
     .then(trans => trans.filter( t => t[ t.length - 1 ] == '.' ) )
 }
 
-const generateCats = (lang) => {
-  let phrases = Array(20).fill(null).map( () => generatePhraseAndInject('кошка мяу')(20, lang) )
-  return generatePromise(phrases, lang)
+const generateCats = (lang, number) => {
+  number = parseInt(number) || 20
+  let phrases = Array(number).fill(null).map( () => generatePhraseAndInject('кошка мяу')(20, lang) )
+  return generatePromiseOneBatch(phrases, lang)
     .then(trans => trans.filter( t => t.includes( LANGS[lang].cat ) ))
     .then(trans => trans.filter( t => t[ t.length - 1 ] == '.' ) )
 }
